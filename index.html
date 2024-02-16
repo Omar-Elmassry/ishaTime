@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ar">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/output.css" rel="stylesheet" />
+    <title>حساب خروج وقت العشاء</title>
+  </head>
+  <body
+    class="bg-slate-900 text-white flex flex-col items-center justify-center min-h-screen"
+  >
+    <form id="form" class="flex flex-col items-center justify-center">
+      <div class="space-y-3">
+        <div class="space-y-2">
+          <div class="">ادخل وقت اذان الفجر</div>
+          <div class="space-x-4">
+            <input
+              class="text-black"
+              type="number"
+              name=""
+              max="12"
+              min="0"
+              id="fajrHours"
+              placeholder="hours"
+            />
+            <input
+              class="text-black"
+              type="number"
+              name=""
+              max="59"
+              min="0"
+              id="fajrMinutes"
+              placeholder="minutes"
+            />
+          </div>
+        </div>
+        <div class="space-y-2">
+          <div class="">ادخل وقت اذان المغرب</div>
+          <div class="space-x-4">
+            <input
+              class="text-black"
+              type="number"
+              name=""
+              max="12"
+              min="0"
+              id="maghribHours"
+              placeholder="hours"
+            />
+            <input
+              class="text-black"
+              type="number"
+              name=""
+              max="59"
+              min="0"
+              id="maghribMinutes"
+              placeholder="minutes"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="!mt-12">
+        <button class="bg-cyan-400 w-20 rounded-full py-2">احسب</button>
+      </div>
+    </form>
+    <div class="ishaTimeDiv mt-20 font-bold hidden">
+      <div class="">
+        يخرج العشاء عند الساعه <span class="text-fuchsia-400"> 10 </span>
+      </div>
+    </div>
+
+    <script>
+      document.querySelector("#form").onsubmit = logTimes;
+
+      function logTimes(e) {
+        e.preventDefault();
+        console.log("🚀 ~ file: index.html:64 ~ logTimes ~ e:", e);
+        const fajrHours = document.querySelector("#fajrHours").valueAsNumber;
+        const fajrMinutes =
+          document.querySelector("#fajrMinutes").valueAsNumber;
+
+        const maghribHours =
+          document.querySelector("#maghribHours").valueAsNumber;
+        const maghribMinutes =
+          document.querySelector("#maghribMinutes").valueAsNumber;
+
+        console.log(fajrHours, fajrMinutes, maghribHours, maghribMinutes);
+
+        let ishaExitHours = (12 - maghribHours + fajrHours) / 2;
+
+        const ishaExitMinutes = () => {
+          const minutesDifference = fajrMinutes - maghribMinutes;
+          let val;
+          if (minutesDifference < 0) {
+            ishaExitHours--;
+            val = (60 + minutesDifference) / 2;
+          } else {
+            val = minutesDifference / 2;
+          }
+
+          val = val + (ishaExitHours % 1) * 60;
+
+          if (val > 60) {
+            ishaExitHours++;
+
+            val = 60 - val;
+          }
+
+          return val;
+        };
+
+        const exactHours = Math.floor(ishaExitHours) + maghribHours;
+        const exactMinutes = Math.floor(ishaExitMinutes());
+
+        console.log(exactHours + ":" + exactMinutes);
+
+        updateDom(`${exactHours}:${exactMinutes}`);
+      }
+      function updateDom(time) {
+        const ishaDiv = document.querySelector(".ishaTimeDiv");
+        const ishaTimeSpan = document.querySelector(".ishaTimeDiv span");
+
+        ishaTimeSpan.innerHTML = time;
+        ishaDiv.classList.remove("hidden");
+      }
+    </script>
+  </body>
+</html>
