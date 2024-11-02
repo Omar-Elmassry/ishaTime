@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build:css": "npx tailwindcss -i ./src/input.css -o ./dist/output.css",
-    "build:copy": "npx copyfiles -u 1 src/index.html src/index.js dist",
-    "build": "npm run build:css && npm run build:copy"
+    "dev": "npx tailwindcss -i ./src/input.css -o ./dist/output.css -y --watch",
+    "build:css": "npx tailwindcss -i ./src/input.css -o ./dist/output.css -y",
+    "build:copy": "npx copyfiles -u 1 src/index.html src/index.js dist -y",
+    "build": "npm run build:css && npm run build:copy",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "repository": {
     "type": "git",
@@ -18,5 +20,8 @@
     "url": "https://github.com/Omar-Elmassry/ishaTime/issues"
   },
   "homepage": "https://github.com/Omar-Elmassry/ishaTime#readme",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "gh-pages": "^6.2.0"
+  }
 }

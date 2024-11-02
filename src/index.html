@@ -3,8 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="/output.css" rel="stylesheet" />
+    <link href="output.css" rel="stylesheet" />
     <title>حساب خروج وقت العشاء</title>
+
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#0f172a" />
+    <link rel="apple-touch-icon" href="icons/192.png" />
   </head>
   <body
     class="bg-slate-900 text-white flex flex-col items-center justify-center min-h-screen"
@@ -118,11 +122,11 @@
 
         // Calculate total minutes (Fajr is always next day)
         let totalMinutes = 0;
-        
+
         // Minutes from maghrib to midnight
         totalMinutes += (24 - maghribHours24) * 60;
         totalMinutes -= maghrib.minutes;
-        
+
         // Minutes from midnight to fajr (next day)
         totalMinutes += fajr.hours * 60;
         totalMinutes += fajr.minutes;
@@ -136,13 +140,13 @@
 
         // Adjust for minute overflow
         if (resultMinutes >= 60) {
-            resultHours += Math.floor(resultMinutes / 60);
-            resultMinutes = resultMinutes % 60;
+          resultHours += Math.floor(resultMinutes / 60);
+          resultMinutes = resultMinutes % 60;
         }
 
         // Adjust for 24-hour overflow
         if (resultHours >= 24) {
-            resultHours -= 24;
+          resultHours -= 24;
         }
 
         // Convert to 12-hour format
@@ -150,11 +154,11 @@
         let hours12 = resultHours > 12 ? resultHours - 12 : resultHours;
 
         return {
-            hours: hours12,
-            minutes: resultMinutes,
-            period: period
+          hours: hours12,
+          minutes: resultMinutes,
+          period: period,
         };
-    }
+      }
 
       function calculateMinutes(fajrMinutes, maghribMinutes, ishaExitHours) {
         const minutesDifference = fajrMinutes - maghribMinutes;
@@ -180,7 +184,7 @@
       function updateDOM(time) {
         const ishaDiv = document.querySelector(".ishaTimeDiv");
         const ishaTimeSpan = document.querySelector(".ishaTimeDiv span");
-        
+
         ishaTimeSpan.textContent = time;
         ishaDiv.classList.remove("hidden");
       }
@@ -190,6 +194,30 @@
         window.alert(message);
         console.error(message);
       }
+    </script>
+
+    <script>
+      // Register Service Worker
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/service-worker.js")
+            .then((registration) => {
+              console.log("ServiceWorker registration successful");
+            })
+            .catch((err) => {
+              console.log("ServiceWorker registration failed: ", err);
+            });
+        });
+      }
+
+      // Add install prompt
+      let deferredPrompt;
+      window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        // Optionally show your own install button
+      });
     </script>
   </body>
 </html>
