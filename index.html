@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ar">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="output.css" rel="stylesheet" />
+    <title>حساب خروج وقت العشاء</title>
+
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#0f172a" />
+    <link rel="apple-touch-icon" href="icons/192.png" />
+  </head>
+  <body
+    class="bg-slate-900 text-white flex flex-col items-center justify-center min-h-screen"
+  >
+    <form id="form" class="flex flex-col items-center justify-center">
+      <div class="space-y-3">
+        <div class="space-y-2">
+          <div class="">ادخل وقت اذان الفجر</div>
+          <div class="space-x-4">
+            <input
+              class="text-black"
+              type="number"
+              name=""
+              max="12"
+              min="0"
+              id="fajrHours"
+              placeholder="hours"
+            />
+            <input
+              class="text-black"
+              type="number"
+              name=""
+              max="59"
+              min="0"
+              id="fajrMinutes"
+              placeholder="minutes"
+            />
+          </div>
+        </div>
+        <div class="space-y-2">
+          <div class="">ادخل وقت اذان المغرب</div>
+          <div class="space-x-4">
+            <input
+              class="text-black"
+              type="number"
+              name=""
+              max="12"
+              min="0"
+              id="maghribHours"
+              placeholder="hours"
+            />
+            <input
+              class="text-black"
+              type="number"
+              name=""
+              max="59"
+              min="0"
+              id="maghribMinutes"
+              placeholder="minutes"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="!mt-12">
+        <button class="bg-cyan-400 w-20 rounded-full py-2">احسب</button>
+      </div>
+    </form>
+    <div class="ishaTimeDiv mt-20 font-bold hidden">
+      <div class="">
+        يخرج العشاء عند الساعه <span class="text-fuchsia-400"> 10 </span>
+      </div>
+    </div>
+
+    <script>
+      // Constants
+      const HOURS_IN_DAY = 24;
+      const MINUTES_IN_HOUR = 60;
+
+      // Event Listeners
+      document.querySelector("#form").onsubmit = calculateIshaTime;
+
+      function calculateIshaTime(e) {
+        e.preventDefault();
+
+        const prayerTimes = getPrayerTimes();
+        if (!isValidPrayerTimes(prayerTimes)) {
+          showError("Please enter valid prayer times");
+          return;
+        }
+
+        const ishaTime = calculateIshaExitTime(prayerTimes);
+        const formattedTime = formatTime(ishaTime);
+        updateDOM(formattedTime);
+      }
+
+      function getPrayerTimes() {
+        return {
+          fajr: {
+            hours: document.querySelector("#fajrHours").valueAsNumber,
+            minutes: document.querySelector("#fajrMinutes").valueAsNumber,
+          },
+          maghrib: {
+            hours: document.querySelector("#maghribHours").valueAsNumber,
+            minutes: document.querySelector("#maghribMinutes").valueAsNumber,
+          },
+        };
+      }
+
+      function isValidPrayerTimes({ fajr, maghrib }) {
+        return isValidTime(fajr) && isValidTime(maghrib);
+      }
+
+      function isValidTime({ hours, minutes }) {
+        return hours >= 0 && hours < 24 && minutes >= 0 && minutes < 60;
+      }
+
+      function calculateIshaExitTime({ fajr, maghrib }) {
+        // Convert maghrib to 24-hour format (always PM)
+        const maghribHours24 = maghrib.hours + 12;
+
+        // Calculate total minutes (Fajr is always next day)
+        let totalMinutes = 0;
+
+        // Minutes from maghrib to midnight
+        totalMinutes += (24 - maghribHours24) * 60;
+        totalMinutes -= maghrib.minutes;
+
+        // Minutes from midnight to fajr (next day)
+        totalMinutes += fajr.hours * 60;
+        totalMinutes += fajr.minutes;
+
+        // Get the midpoint in minutes
+        const midpointMinutes = Math.floor(totalMinutes / 2);
+
+        // Add to maghrib time
+        let resultHours = maghribHours24;
+        let resultMinutes = maghrib.minutes + midpointMinutes;
+
+        // Adjust for minute overflow
+        if (resultMinutes >= 60) {
+          resultHours += Math.floor(resultMinutes / 60);
+          resultMinutes = resultMinutes % 60;
+        }
+
+        // Adjust for 24-hour overflow
+        if (resultHours >= 24) {
+          resultHours -= 24;
+        }
+
+        // Convert to 12-hour format
+        let period = "PM";
+        let hours12 = resultHours > 12 ? resultHours - 12 : resultHours;
+
+        return {
+          hours: hours12,
+          minutes: resultMinutes,
+          period: period,
+        };
+      }
+
+      function calculateMinutes(fajrMinutes, maghribMinutes, ishaExitHours) {
+        const minutesDifference = fajrMinutes - maghribMinutes;
+        let minutes =
+          minutesDifference < 0
+            ? (MINUTES_IN_HOUR + minutesDifference) / 2
+            : minutesDifference / 2;
+
+        minutes += (ishaExitHours % 1) * MINUTES_IN_HOUR;
+
+        if (minutes >= MINUTES_IN_HOUR) {
+          ishaExitHours++;
+          minutes -= MINUTES_IN_HOUR;
+        }
+
+        return minutes;
+      }
+
+      function formatTime({ hours, minutes, period }) {
+        return `${hours}:${minutes.toString().padStart(2, "0")} ${period}`;
+      }
+
+      function updateDOM(time) {
+        const ishaDiv = document.querySelector(".ishaTimeDiv");
+        const ishaTimeSpan = document.querySelector(".ishaTimeDiv span");
+
+        ishaTimeSpan.textContent = time;
+        ishaDiv.classList.remove("hidden");
+      }
+
+      function showError(message) {
+        // Implement error display logic
+        window.alert(message);
+        console.error(message);
+      }
+    </script>
+
+    <script>
+      // Register Service Worker
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/service-worker.js")
+            .then((registration) => {
+              console.log("ServiceWorker registration successful");
+            })
+            .catch((err) => {
+              console.log("ServiceWorker registration failed: ", err);
+            });
+        });
+      }
+
+      // Add install prompt
+      let deferredPrompt;
+      window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        // Optionally show your own install button
+      });
+    </script>
+  </body>
+</html>
