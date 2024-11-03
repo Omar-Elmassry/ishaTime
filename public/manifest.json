@@ -1,7 +1,8 @@
 {
   "name": "Isha Time Calculator",
   "short_name": "IshaTime",
-  "start_url": "/",
+  "description": "Isha Time Calculator",
+  "start_url": "/ishaTime/",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
