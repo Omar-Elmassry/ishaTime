@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "docs": "http-server docs --port=4001 -o",
     "dev": "npx -y tailwindcss -i ./src/input.css -o ./dist/output.css --watch",
-    "start": "npx -y live-server dist --port=4000",
+    "start": "http-server dist --port=4000 -o",
     "build:css": "npx -y tailwindcss -i ./src/input.css -o ./dist/output.css",
     "build:copy": "npx -y copyfiles -u 1 src/index.html \"public/**/*\" dist",
     "build": "npm run build:css && npm run build:copy",
@@ -24,5 +25,8 @@
   "description": "",
   "devDependencies": {
     "gh-pages": "^6.2.0"
+  },
+  "dependencies": {
+    "http-server": "^14.1.1"
   }
 }

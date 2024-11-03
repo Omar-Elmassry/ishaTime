@@ -1,0 +1,10 @@
+curl 'http://api.aladhan.com/v1/timings/03-11-2024?latitude=29.989618&longitude=31.336841&method=5&shafaq=general&school=0&midnightMode=1&timezonestring=Africa%2FCairo&iso8601=false' \
+  -H 'Accept-Language: en-US,en;q=0.9,ar-SA;q=0.8,ar;q=0.7,ko;q=0.6' \
+  -H 'Cache-Control: no-cache' \
+  -H 'Connection: keep-alive' \
+  -H 'Origin: http://127.0.0.1:4001' \
+  -H 'Pragma: no-cache' \
+  -H 'Referer: http://127.0.0.1:4001/' \
+  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36' \
+  -H 'accept: application/json' \
+  --insecure
