@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "npx tailwindcss -i ./src/input.css -o ./dist/output.css -y --watch",
-    "build:css": "npx tailwindcss -i ./src/input.css -o ./dist/output.css -y",
-    "build:copy": "npx copyfiles -u 1 src/index.html src/index.js dist -y",
+    "dev": "npx -y tailwindcss -i ./src/input.css -o ./dist/output.css --watch",
+    "start": "npx -y live-server dist --port=4000",
+    "build:css": "npx -y tailwindcss -i ./src/input.css -o ./dist/output.css",
+    "build:copy": "npx -y copyfiles -u 1 src/index.html \"public/**/*\" dist",
     "build": "npm run build:css && npm run build:copy",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
