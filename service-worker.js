@@ -1,5 +1,5 @@
 const CACHE_NAME = "isha-time-v1";
-const urlsToCache = ["/", "/index.html", "/output.css", "/manifest.json"];
+const urlsToCache = ["/", "index.html", "output.css", "manifest.json"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
