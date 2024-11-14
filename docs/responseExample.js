@@ -1,4 +1,4 @@
-{
+export const responseExample = {
   "code": 200,
   "status": "OK",
   "data": {

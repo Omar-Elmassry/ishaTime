@@ -1,6 +1,9 @@
+import { responseExample } from "@/lib/data";
+import { App } from "@/react-query-example";
 import { useState, FormEvent } from "react";
 
 function Home() {
+  const data = responseExample;
   const [fajrTime, setFajrTime] = useState({ hours: 0, minutes: 0 });
   const [maghribTime, setMaghribTime] = useState({ hours: 0, minutes: 0 });
   const [ishaTime, setIshaTime] = useState<string | null>(null);
@@ -48,88 +51,8 @@ function Home() {
     <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
       <div className="relative py-3 sm:max-w-xl sm:mx-auto">
         <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-          <div className="max-w-md mx-auto">
-            <div className="divide-y divide-gray-200">
-              <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
-                <h2 className="text-2xl font-bold mb-8 text-center">
-                  حساب وقت خروج العشاء
-                </h2>
-                <form onSubmit={calculateIshaTime} className="space-y-6">
-                  <div>
-                    <label className="block text-lg mb-2">وقت الفجر</label>
-                    <div className="flex gap-4">
-                      <input
-                        type="number"
-                        className="w-20 px-3 py-2 border rounded"
-                        placeholder="ساعة"
-                        value={fajrTime.hours}
-                        onChange={(e) =>
-                          setFajrTime({
-                            ...fajrTime,
-                            hours: parseInt(e.target.value),
-                          })
-                        }
-                      />
-                      <input
-                        type="number"
-                        className="w-20 px-3 py-2 border rounded"
-                        placeholder="دقيقة"
-                        value={fajrTime.minutes}
-                        onChange={(e) =>
-                          setFajrTime({
-                            ...fajrTime,
-                            minutes: parseInt(e.target.value),
-                          })
-                        }
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-lg mb-2">وقت المغرب</label>
-                    <div className="flex gap-4">
-                      <input
-                        type="number"
-                        className="w-20 px-3 py-2 border rounded"
-                        placeholder="ساعة"
-                        value={maghribTime.hours}
-                        onChange={(e) =>
-                          setMaghribTime({
-                            ...maghribTime,
-                            hours: parseInt(e.target.value),
-                          })
-                        }
-                      />
-                      <input
-                        type="number"
-                        className="w-20 px-3 py-2 border rounded"
-                        placeholder="دقيقة"
-                        value={maghribTime.minutes}
-                        onChange={(e) =>
-                          setMaghribTime({
-                            ...maghribTime,
-                            minutes: parseInt(e.target.value),
-                          })
-                        }
-                      />
-                    </div>
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded"
-                  >
-                    احسب
-                  </button>
-                </form>
-                {ishaTime && (
-                  <div className="mt-8 text-center">
-                    <h3 className="text-xl mb-2">وقت خروج العشاء</h3>
-                    <p className="text-2xl font-bold text-blue-600">
-                      {ishaTime}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
+          <div className="">
+            {/* <App /> */}
           </div>
         </div>
       </div>

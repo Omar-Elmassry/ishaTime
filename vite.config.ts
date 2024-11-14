@@ -29,6 +29,7 @@ export default defineConfig({
   base: "/isha-time/",
   resolve: {
     alias: {
+      "~": path.resolve(__dirname, "."),
       "@": path.resolve(__dirname, "./src"),
     },
   },
