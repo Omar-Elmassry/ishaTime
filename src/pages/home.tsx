@@ -1,59 +1,107 @@
-import { responseExample } from "@/lib/data";
-import { App } from "@/react-query-example";
-import { useState, FormEvent } from "react";
+import { useAdhanTimesQuery } from "@/lib/react-query/hooks/use-adhan-times-query";
 
 function Home() {
-  const data = responseExample;
-  const [fajrTime, setFajrTime] = useState({ hours: 0, minutes: 0 });
-  const [maghribTime, setMaghribTime] = useState({ hours: 0, minutes: 0 });
-  const [ishaTime, setIshaTime] = useState<string | null>(null);
-
-  const calculateIshaTime = (e: FormEvent) => {
-    e.preventDefault();
-
-    // Convert maghrib to 24-hour format (always PM)
-    const maghribHours24 = maghribTime.hours + 12;
-
-    // Calculate total minutes (Fajr is always next day)
-    let totalMinutes = 0;
-
-    // Minutes from maghrib to midnight
-    totalMinutes += (24 - maghribHours24) * 60;
-    totalMinutes -= maghribTime.minutes;
-
-    // Minutes from midnight to fajr (next day)
-    totalMinutes += fajrTime.hours * 60;
-    totalMinutes += fajrTime.minutes;
-
-    // Get the midpoint in minutes
-    const midpointMinutes = Math.floor(totalMinutes / 2);
-
-    // Add to maghrib time
-    let resultHours = maghribHours24;
-    let resultMinutes = maghribTime.minutes + midpointMinutes;
-
-    // Adjust for minute overflow
-    if (resultMinutes >= 60) {
-      resultHours += Math.floor(resultMinutes / 60);
-      resultMinutes = resultMinutes % 60;
-    }
-
-    // Convert to 12-hour format
-    const hours12 = resultHours > 12 ? resultHours - 12 : resultHours;
-    const formattedTime = `${hours12}:${resultMinutes
-      .toString()
-      .padStart(2, "0")} PM`;
-
-    setIshaTime(formattedTime);
+  const responseExample = {
+    code: 200,
+    status: "OK",
+    data: {
+      timings: {
+        Fajr: "04:42",
+        Sunrise: "06:10",
+        Dhuhr: "11:38",
+        Asr: "14:45",
+        Sunset: "17:06",
+        Maghrib: "17:06",
+        Isha: "18:25",
+        Imsak: "04:32",
+        Midnight: "22:54",
+        Firstthird: "20:58",
+        Lastthird: "00:50",
+      },
+      date: {
+        readable: "03 Nov 2024",
+        timestamp: "1730610000",
+        hijri: {
+          date: "01-05-1446",
+          format: "DD-MM-YYYY",
+          day: "01",
+          weekday: {
+            en: "Al Ahad",
+            ar: "\u0627\u0644\u0627\u062d\u062f",
+          },
+          month: {
+            number: 5,
+            en: "Jum\u0101d\u00e1 al-\u016bl\u00e1",
+            ar: "\u062c\u064f\u0645\u0627\u062f\u0649 \u0627\u0644\u0623\u0648\u0644\u0649",
+          },
+          year: "1446",
+          designation: {
+            abbreviated: "AH",
+            expanded: "Anno Hegirae",
+          },
+          holidays: [],
+        },
+        gregorian: {
+          date: "03-11-2024",
+          format: "DD-MM-YYYY",
+          day: "03",
+          weekday: {
+            en: "Sunday",
+          },
+          month: {
+            number: 11,
+            en: "November",
+          },
+          year: "2024",
+          designation: {
+            abbreviated: "AD",
+            expanded: "Anno Domini",
+          },
+        },
+      },
+      meta: {
+        latitude: 29.989618,
+        longitude: 31.336841,
+        timezone: "Africa/Cairo",
+        method: {
+          id: 5,
+          name: "Egyptian General Authority of Survey",
+          params: {
+            Fajr: 19.5,
+            Isha: 17.5,
+          },
+          location: {
+            latitude: 30.0444196,
+            longitude: 31.2357116,
+          },
+        },
+        latitudeAdjustmentMethod: "ANGLE_BASED",
+        midnightMode: "JAFARI",
+        school: "STANDARD",
+        offset: {
+          Imsak: 0,
+          Fajr: 0,
+          Sunrise: 0,
+          Dhuhr: 0,
+          Asr: 0,
+          Maghrib: 0,
+          Sunset: 0,
+          Isha: 0,
+          Midnight: 0,
+        },
+      },
+    },
   };
+
+  const today = new Date().toLocaleDateString("en-GB").split("/").join("-"); // DD-MM-YYYY
+
+  const { data } = useAdhanTimesQuery(today);
 
   return (
     <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
       <div className="relative py-3 sm:max-w-xl sm:mx-auto">
         <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-          <div className="">
-            {/* <App /> */}
-          </div>
+          <div className=""></div>
         </div>
       </div>
     </div>
