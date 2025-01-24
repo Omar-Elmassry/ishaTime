@@ -1,108 +1,66 @@
 import { useAdhanTimesQuery } from "@/lib/react-query/hooks/use-adhan-times-query";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function Home() {
-  const responseExample = {
-    code: 200,
-    status: "OK",
-    data: {
-      timings: {
-        Fajr: "04:42",
-        Sunrise: "06:10",
-        Dhuhr: "11:38",
-        Asr: "14:45",
-        Sunset: "17:06",
-        Maghrib: "17:06",
-        Isha: "18:25",
-        Imsak: "04:32",
-        Midnight: "22:54",
-        Firstthird: "20:58",
-        Lastthird: "00:50",
-      },
-      date: {
-        readable: "03 Nov 2024",
-        timestamp: "1730610000",
-        hijri: {
-          date: "01-05-1446",
-          format: "DD-MM-YYYY",
-          day: "01",
-          weekday: {
-            en: "Al Ahad",
-            ar: "\u0627\u0644\u0627\u062d\u062f",
-          },
-          month: {
-            number: 5,
-            en: "Jum\u0101d\u00e1 al-\u016bl\u00e1",
-            ar: "\u062c\u064f\u0645\u0627\u062f\u0649 \u0627\u0644\u0623\u0648\u0644\u0649",
-          },
-          year: "1446",
-          designation: {
-            abbreviated: "AH",
-            expanded: "Anno Hegirae",
-          },
-          holidays: [],
-        },
-        gregorian: {
-          date: "03-11-2024",
-          format: "DD-MM-YYYY",
-          day: "03",
-          weekday: {
-            en: "Sunday",
-          },
-          month: {
-            number: 11,
-            en: "November",
-          },
-          year: "2024",
-          designation: {
-            abbreviated: "AD",
-            expanded: "Anno Domini",
-          },
-        },
-      },
-      meta: {
-        latitude: 29.989618,
-        longitude: 31.336841,
-        timezone: "Africa/Cairo",
-        method: {
-          id: 5,
-          name: "Egyptian General Authority of Survey",
-          params: {
-            Fajr: 19.5,
-            Isha: 17.5,
-          },
-          location: {
-            latitude: 30.0444196,
-            longitude: 31.2357116,
-          },
-        },
-        latitudeAdjustmentMethod: "ANGLE_BASED",
-        midnightMode: "JAFARI",
-        school: "STANDARD",
-        offset: {
-          Imsak: 0,
-          Fajr: 0,
-          Sunrise: 0,
-          Dhuhr: 0,
-          Asr: 0,
-          Maghrib: 0,
-          Sunset: 0,
-          Isha: 0,
-          Midnight: 0,
-        },
-      },
-    },
-  };
+  const today = new Date().toLocaleDateString("en-GB").split("/").join("-");
+  const { data, isLoading } = useAdhanTimesQuery(today);
 
-  const today = new Date().toLocaleDateString("en-GB").split("/").join("-"); // DD-MM-YYYY
-
-  const { data } = useAdhanTimesQuery(today);
+  const prayers = [
+    { name: "Fajr", time: data?.data.timings.Fajr },
+    { name: "Dhuhr", time: data?.data.timings.Dhuhr },
+    { name: "Asr", time: data?.data.timings.Asr },
+    { name: "Maghrib", time: data?.data.timings.Maghrib },
+    { name: "Isha", time: data?.data.timings.Isha },
+    { name: "Midnight", time: data?.data.timings.Midnight },
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
-      <div className="relative py-3 sm:max-w-xl sm:mx-auto">
-        <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-          <div className=""></div>
-        </div>
+    <div className="min-h-screen bg-gray-950 py-6 flex flex-col justify-center sm:py-12">
+      <div className="relative py-3 sm:max-w-3xl sm:mx-auto">
+        <Card className="border-0 bg-gray-900/50 backdrop-blur-lg">
+          <CardHeader className="space-y-1 text-center">
+            {isLoading ? (
+              <Skeleton className="h-8 w-48 mx-auto" />
+            ) : (
+              <>
+                <CardTitle className="text-2xl font-bold tracking-tight text-white">
+                  {data?.data.date.readable}
+                </CardTitle>
+                <p className="text-sm text-gray-400">
+                  {data?.data.date.hijri.date} {data?.data.date.hijri.month.en}
+                </p>
+              </>
+            )}
+          </CardHeader>
+
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {prayers.map((prayer) => (
+                <div
+                  key={prayer.name}
+                  className="bg-gray-800/50 rounded-lg p-4 text-center transition-colors hover:bg-gray-800"
+                >
+                  {isLoading ? (
+                    <>
+                      <Skeleton className="h-5 w-20 mx-auto mb-2" />
+                      <Skeleton className="h-6 w-16 mx-auto" />
+                    </>
+                  ) : (
+                    <>
+                      <h3 className="text-gray-400 text-sm font-medium mb-1">
+                        {prayer.name}
+                      </h3>
+                      <p className="text-white text-lg font-semibold">
+                        {prayer.time}
+                      </p>
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
