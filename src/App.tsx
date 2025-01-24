@@ -3,7 +3,7 @@ import Home from "./pages/home";
 
 function App() {
   return (
-    <BrowserRouter basename="/isha-time">
+    <BrowserRouter basename="/ishaTime">
       <Routes>
         <Route path="/" element={<Home />} />
       </Routes>
