@@ -1,6 +1,7 @@
 import { useAdhanTimesQuery } from "@/lib/react-query/hooks/use-adhan-times-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 
 function Home() {
   const today = new Date().toLocaleDateString("en-GB").split("/").join("-");
@@ -14,6 +15,33 @@ function Home() {
     { name: "Isha", time: data?.data.timings.Isha },
     { name: "Midnight", time: data?.data.timings.Midnight },
   ];
+
+  const calculateTimeDifference = (timeStr: string) => {
+    const [hours, minutes] = timeStr.split(":").map(Number);
+    const prayerTime = new Date();
+    prayerTime.setHours(hours, minutes, 0);
+
+    const now = new Date();
+    const diffMs = prayerTime.getTime() - now.getTime();
+    const diffMins = Math.abs(Math.round(diffMs / 60000));
+
+    const hours_diff = Math.floor(diffMins / 60);
+    const minutes_diff = diffMins % 60;
+
+    if (diffMs > 0) {
+      return `${hours_diff}h ${minutes_diff}m remaining`;
+    } else {
+      return `${hours_diff}h ${minutes_diff}m ago`;
+    }
+  };
+
+  const handleTimeClick = (name: string, time: string) => {
+    if (!time) return;
+    const timeDiff = calculateTimeDifference(time);
+    toast(`${name} Prayer`, {
+      description: timeDiff,
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gray-950 py-6 flex flex-col justify-center sm:py-12">
@@ -40,6 +68,7 @@ function Home() {
                 <div
                   key={prayer.name}
                   className="bg-gray-800/50 rounded-lg p-4 text-center transition-colors hover:bg-gray-800"
+                  onClick={() => handleTimeClick(prayer.name, prayer.time)}
                 >
                   {isLoading ? (
                     <>
