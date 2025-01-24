@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/isha-time/sw.js', { scope: '/isha-time/' })})}
